@@ -1,6 +1,7 @@
 import argparse
 import json
 import string
+from nltk.stem import PorterStemmer
 
 
     
@@ -12,7 +13,9 @@ def tokenize(text):
     return text.split()
 
 def process(query: str, movies: str, stop_words: list):
-    tokens = [token for token in tokenize(query) if token not in stop_words]
+    stemmer = PorterStemmer()
+
+    tokens = [stemmer.stem(token) for token in tokenize(query) if token not in stop_words]
     return [
         movie
         for movie in movies
@@ -28,6 +31,7 @@ def main() -> None:
     search_parser.add_argument("query", type=str, help="search query")
 
     args = parser.parse_args()
+
     with open("data/movies.json", "r") as f:
         data = json.load(f)
         movies = data["movies"]
